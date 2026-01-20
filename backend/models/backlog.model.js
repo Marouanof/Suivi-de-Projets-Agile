@@ -39,10 +39,10 @@ exports.getMaxPosition = (sprintId, status) => {
 };
 
 exports.create = (item) => {
-    const { id, project_id, sprint_id, title, description, type, story_points, priority, status, position, assigned_to_id, created_by_id } = item;
+    const { project_id, sprint_id, title, description, type, story_points, priority, status, position, assigned_to_id, created_by_id } = item;
     return db.query(
-        "INSERT INTO backlog_items (id, project_id, sprint_id, title, description, type, story_points, priority, status, position, assigned_to_id, created_by_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [id, project_id, sprint_id, title, description, type || 'USER_STORY', story_points || 0, priority || 0, status || 'BACKLOG', position || 0, assigned_to_id, created_by_id]
+        "INSERT INTO backlog_items (project_id, sprint_id, title, description, type, story_points, priority, status, position, assigned_to_id, created_by_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [project_id, sprint_id, title, description, type || 'USER_STORY', story_points || 0, priority || 0, status || 'BACKLOG', position || 0, assigned_to_id, created_by_id]
     );
 };
 
