@@ -4,7 +4,13 @@ const cors = require("cors");
 
 const app = express();
 
-app.use(cors());
+// CORS explicite : ajuster origin/credentials si sessions ou cookies sont utilisés côté client
+app.use(cors({
+	origin: process.env.CORS_ORIGIN || "*",
+	methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+	allowedHeaders: ["Content-Type", "Authorization"],
+	credentials: true
+}));
 app.use(express.json());
 
 app.use("/api/auth", require("./routes/auth.routes"));

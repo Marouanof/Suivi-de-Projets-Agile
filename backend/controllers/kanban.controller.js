@@ -1,6 +1,5 @@
 const BacklogItem = require("../models/backlog.model");
 const Sprint = require("../models/sprint.model");
-const { v4: uuid } = require("uuid");
 const db = require("../config/database");
 
 const fetchItem = async (connection, id) => {
