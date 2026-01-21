@@ -1,0 +1,43 @@
+name: Analyse de Couverture SonarCloud
+
+on:
+  push:
+    branches: [ main ] # Se déclenche quand tu pousses sur la branche main
+
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Nécessaire pour l'analyse de l'historique
+
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # --- BACKEND : Installation et Tests ---
+      - name: Backend - Tests & Coverage
+        run: |
+          cd backend
+          npm install
+          npm test -- --coverage
+        continue-on-error: true # Pour ne pas bloquer si un test échoue
+
+      # --- FRONTEND : Installation et Tests ---
+      - name: Frontend - Tests & Coverage
+        run: |
+          cd frontend
+          npm install
+          npm test -- --coverage
+        continue-on-error: true
+
+      # --- ENVOI DES RAPPORTS À SONARCLOUD ---
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Automatique par GitHub
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    # Ton secret ajouté sur GitHub
