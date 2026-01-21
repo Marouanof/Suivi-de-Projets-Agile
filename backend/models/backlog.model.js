@@ -1,4 +1,5 @@
 const db = require("../config/database");
+const { shiftPositions, reorderInSameColumn, removeFromColumn } = require("./utils");
 
 exports.findAllByProject = (projectId) => {
     return db.query(
@@ -116,39 +117,9 @@ exports.sumStoryPointsBySprint = (sprintId) => {
 };
 
 // Reordering logic helpers
-exports.shiftPositions = (sprintId, status, fromPos, direction) => {
-    // direction: 1 (inc) or -1 (dec)
-    const op = direction > 0 ? "+" : "-";
-    return db.query(
-        `UPDATE backlog_items SET position = position ${op} 1 
-         WHERE sprint_id = ? AND status = ? AND position >= ?`,
-        [sprintId, status, fromPos]
-    );
-};
-
-exports.reorderInSameColumn = (sprintId, status, fromPos, toPos) => {
-    if (fromPos < toPos) {
-        return db.query(
-            `UPDATE backlog_items SET position = position - 1 
-             WHERE sprint_id = ? AND status = ? AND position > ? AND position <= ?`,
-            [sprintId, status, fromPos, toPos]
-        );
-    } else {
-        return db.query(
-            `UPDATE backlog_items SET position = position + 1 
-             WHERE sprint_id = ? AND status = ? AND position >= ? AND position < ?`,
-            [sprintId, status, toPos, fromPos]
-        );
-    }
-};
-
-exports.removeFromColumn = (sprintId, status, fromPos) => {
-    return db.query(
-        `UPDATE backlog_items SET position = position - 1 
-         WHERE sprint_id = ? AND status = ? AND position > ?`,
-        [sprintId, status, fromPos]
-    );
-};
+exports.shiftPositions = shiftPositions;
+exports.reorderInSameColumn = reorderInSameColumn;
+exports.removeFromColumn = removeFromColumn;
 
 exports.isMember = (projectId, userId) => {
     return db.query(
