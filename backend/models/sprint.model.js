@@ -1,5 +1,15 @@
 const db = require("../config/database");
 
+const ALLOWED_UPDATE_FIELDS = new Set([
+    "name",
+    "start_date",
+    "end_date",
+    "status",
+    "planned_velocity",
+    "actual_velocity",
+    "isActive"
+]);
+
 exports.findAllByProject = (projectId) => {
     return db.query(
         `SELECT * FROM sprints
@@ -35,12 +45,12 @@ exports.updatePartial = (id, data) => {
     const fields = [];
     const values = [];
 
-    for (const key in data) {
-        if (data[key] !== undefined) {
+    Object.entries(data)
+        .filter(([key, value]) => value !== undefined && ALLOWED_UPDATE_FIELDS.has(key))
+        .forEach(([key, value]) => {
             fields.push(`${key} = ?`);
-            values.push(data[key]);
-        }
-    }
+            values.push(value);
+        });
 
     if (!fields.length) return Promise.resolve();
 
