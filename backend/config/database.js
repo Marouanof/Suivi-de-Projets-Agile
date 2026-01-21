@@ -12,4 +12,9 @@ const pool = mysql.createPool({
 });
 
 // Version promise pour async/await
-module.exports = pool.promise();
+const promisePool = pool.promise();
+
+// Permettre la fermeture du pool (utile pour les tests Jest afin d'éviter les handles ouverts)
+promisePool.close = () => pool.end();
+
+module.exports = promisePool;
