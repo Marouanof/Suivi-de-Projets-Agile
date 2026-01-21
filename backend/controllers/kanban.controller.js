@@ -3,6 +3,62 @@ const Sprint = require("../models/sprint.model");
 const { v4: uuid } = require("uuid");
 const db = require("../config/database");
 
+const fetchItem = async (connection, id) => {
+    const [items] = await connection.query("SELECT * FROM backlog_items WHERE id = ?", [id]);
+    if (items.length === 0) throw new Error("Item not found");
+    return items[0];
+};
+
+const ensureMember = async (connection, projectId, userId) => {
+    const [member] = await connection.query(
+        "SELECT 1 FROM project_members WHERE project_id = ? AND user_id = ?",
+        [projectId, userId]
+    );
+    if (member.length === 0) throw new Error("Unauthorized: You are not a member of this project");
+};
+
+const ensureSprintMovable = async (connection, sprintId, errorMessage) => {
+    if (!sprintId) return;
+    const [sprints] = await connection.query("SELECT status FROM sprints WHERE id = ?", [sprintId]);
+    if (sprints.length > 0 && sprints[0].status === "COMPLETED") {
+        throw new Error(errorMessage);
+    }
+};
+
+const reorderSameColumn = async (connection, sprintId, status, fromPos, toPos) => {
+    if (fromPos < toPos) {
+        return connection.query(
+            "UPDATE backlog_items SET position = COALESCE(position, 0) - 1 WHERE sprint_id = ? AND status = ? AND position > ? AND position <= ?",
+            [sprintId, status, fromPos, toPos]
+        );
+    }
+    if (fromPos > toPos) {
+        return connection.query(
+            "UPDATE backlog_items SET position = COALESCE(position, 0) + 1 WHERE sprint_id = ? AND status = ? AND position >= ? AND position < ?",
+            [sprintId, status, toPos, fromPos]
+        );
+    }
+};
+
+const moveAcrossColumns = async (connection, item, fromStatus, fromPos, finalSprintId, finalStatus, finalPosition) => {
+    await connection.query(
+        "UPDATE backlog_items SET position = COALESCE(position, 0) - 1 WHERE sprint_id = ? AND status = ? AND position > ?",
+        [item.sprint_id, fromStatus, fromPos]
+    );
+
+    await connection.query(
+        "UPDATE backlog_items SET position = COALESCE(position, 0) + 1 WHERE sprint_id = ? AND status = ? AND position >= ?",
+        [finalSprintId, finalStatus, finalPosition]
+    );
+};
+
+const computeTimestampUpdate = (fromStatus, finalStatus, startedAt) => {
+    if (finalStatus === "IN_PROGRESS" && !startedAt) return ", started_at = CURRENT_TIMESTAMP";
+    if (finalStatus === "DONE") return ", completed_at = CURRENT_TIMESTAMP";
+    if (fromStatus === "DONE" && finalStatus !== "DONE") return ", completed_at = NULL";
+    return "";
+};
+
 exports.getKanbanBoard = async (req, res) => {
     try {
         const { sprintId } = req.params;
@@ -35,93 +91,35 @@ exports.moveKanbanItem = async (req, res) => {
         const toStatus = req.body.toStatus || req.body.status;
         const toPosition = req.body.toPosition !== undefined ? req.body.toPosition : req.body.position;
         const toSprintId = req.body.toSprintId || req.body.sprint_id;
-
-        console.log(`DEBUG: Moving item ${id}`, { toStatus, toPosition, toSprintId, body: req.body });
-
-        const [items] = await connection.query("SELECT * FROM backlog_items WHERE id = ?", [id]);
-        if (items.length === 0) throw new Error("Item not found");
-        const item = items[0];
-
-        // 1. Check membership
-        const [member] = await connection.query(
-            "SELECT * FROM project_members WHERE project_id = ? AND user_id = ?",
-            [item.project_id, req.user.id]
-        );
-        if (member.length === 0) throw new Error("Unauthorized: You are not a member of this project");
-
-        // 2. Check source sprint
-        const [sprints] = await connection.query("SELECT * FROM sprints WHERE id = ?", [item.sprint_id]);
-        if (sprints.length > 0 && sprints[0].status === 'COMPLETED') {
-            throw new Error("Cannot move items from a completed sprint");
-        }
-
-        // 3. Check target sprint (if different)
+        const item = await fetchItem(connection, id);
+        await ensureMember(connection, item.project_id, req.user.id);
+        await ensureSprintMovable(connection, item.sprint_id, "Cannot move items from a completed sprint");
         if (toSprintId && toSprintId !== item.sprint_id) {
-            const [newSprints] = await connection.query("SELECT * FROM sprints WHERE id = ?", [toSprintId]);
-            if (newSprints.length > 0 && newSprints[0].status === 'COMPLETED') {
-                throw new Error("Cannot move items to a completed sprint");
-            }
+            await ensureSprintMovable(connection, toSprintId, "Cannot move items to a completed sprint");
         }
 
         const fromStatus = item.status;
         const fromPos = item.position;
         const finalSprintId = toSprintId || item.sprint_id;
-        const finalStatus = toStatus || fromStatus || 'TODO';
-        const finalPosition = (toPosition !== undefined && toPosition !== null) ? Number(toPosition) : (fromPos || 0);
-
-        console.log(`DEBUG: Final values: status=${finalStatus}, position=${finalPosition}, sprint=${finalSprintId}`);
+        const finalStatus = toStatus || fromStatus || "TODO";
+        const finalPosition = toPosition !== undefined && toPosition !== null ? Number(toPosition) : fromPos || 0;
 
         if (fromStatus === finalStatus && item.sprint_id === finalSprintId) {
-            // Same column reorder
-            if (fromPos < finalPosition) {
-                await connection.query(
-                    "UPDATE backlog_items SET position = COALESCE(position, 0) - 1 WHERE sprint_id = ? AND status = ? AND position > ? AND position <= ?",
-                    [finalSprintId, finalStatus, fromPos, finalPosition]
-                );
-            } else if (fromPos > finalPosition) {
-                await connection.query(
-                    "UPDATE backlog_items SET position = COALESCE(position, 0) + 1 WHERE sprint_id = ? AND status = ? AND position >= ? AND position < ?",
-                    [finalSprintId, finalStatus, finalPosition, fromPos]
-                );
-            }
+            await reorderSameColumn(connection, finalSprintId, finalStatus, fromPos, finalPosition);
         } else {
-            // Different column or different sprint
-            // 1. Remove from old column
-            await connection.query(
-                "UPDATE backlog_items SET position = COALESCE(position, 0) - 1 WHERE sprint_id = ? AND status = ? AND position > ?",
-                [item.sprint_id, fromStatus, fromPos]
-            );
-
-            // 2. Shift items in new column
-            await connection.query(
-                "UPDATE backlog_items SET position = COALESCE(position, 0) + 1 WHERE sprint_id = ? AND status = ? AND position >= ?",
-                [finalSprintId, finalStatus, finalPosition]
-            );
+            await moveAcrossColumns(connection, item, fromStatus, fromPos, finalSprintId, finalStatus, finalPosition);
         }
 
-        // 3. Update the item itself
-        let timestampUpdate = "";
-        const updateParams = [finalStatus, finalPosition, finalSprintId];
-
-        if (finalStatus === 'IN_PROGRESS' && !item.started_at) {
-            timestampUpdate = ", started_at = CURRENT_TIMESTAMP";
-        } else if (finalStatus === 'DONE') {
-            timestampUpdate = ", completed_at = CURRENT_TIMESTAMP";
-        } else if (fromStatus === 'DONE' && finalStatus !== 'DONE') {
-            // If moved back from DONE, clear completed_at
-            timestampUpdate = ", completed_at = NULL";
-        }
-
+        const timestampUpdate = computeTimestampUpdate(fromStatus, finalStatus, item.started_at);
         const [updateResult] = await connection.query(
             `UPDATE backlog_items SET status = ?, position = ?, sprint_id = ? ${timestampUpdate} WHERE id = ?`,
-            [...updateParams, id]
+            [finalStatus, finalPosition, finalSprintId, id]
         );
-        console.log(`DEBUG: Update result rows: ${updateResult.affectedRows}`);
 
         await connection.commit();
 
         const [updatedRows] = await connection.query("SELECT * FROM backlog_items WHERE id = ?", [id]);
-        res.json({ message: "Item moved successfully", item: updatedRows[0] });
+        res.json({ message: "Item moved successfully", item: updatedRows[0], updated: updateResult.affectedRows });
     } catch (err) {
         await connection.rollback();
         console.error("DEBUG ERROR:", err.message);

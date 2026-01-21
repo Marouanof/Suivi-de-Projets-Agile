@@ -8,7 +8,7 @@ exports.findByEmail = (email) => {
 exports.create = async (user) => {
     const { id, email, password, first_name, last_name, role } = user;
     if (!email || !password) {
-        return Promise.reject(new Error("Email and password are required"));
+        throw new Error("Email and password are required");
     }
 
     const normalizedRole = role || "USER";
