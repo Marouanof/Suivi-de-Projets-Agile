@@ -2,9 +2,12 @@ const db = require("../config/database");
 
 exports.create = (comment) => {
     const { id, backlog_item_id, user_id, content } = comment;
+    if (!content || !content.trim()) {
+        return Promise.reject(new Error("Comment content is required"));
+    }
     return db.query(
         "INSERT INTO backlog_item_comments (id, backlog_item_id, user_id, content) VALUES (?, ?, ?, ?)",
-        [id, backlog_item_id, user_id, content]
+        [id, backlog_item_id, user_id, content.trim()]
     );
 };
 

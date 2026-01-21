@@ -18,6 +18,10 @@ exports.findById = (id) => {
 exports.create = (project) => {
     const { id, name, description, start_date, end_date, created_by } = project;
 
+    if (!name || !name.trim()) {
+        return Promise.reject(new Error("Project name is required"));
+    }
+
     return db.query(
         `INSERT INTO projects 
         (id, name, description, start_date, end_date, status, isActive, created_by)
@@ -62,6 +66,11 @@ exports.softDelete = (id) => {
 
 exports.update = (id, project) => {
     const { name, description, start_date, end_date, status, isActive } = project;
+    const allowedStatuses = new Set(["PLANNING", "ACTIVE", "ON_HOLD", "DONE", "CANCELLED"]);
+    if (status && !allowedStatuses.has(status)) {
+        return Promise.reject(new Error("Invalid project status"));
+    }
+
     return db.query(
         "UPDATE projects SET name = ?, description = ?, start_date = ?, end_date = ?, status = ?, isActive = ? WHERE id = ?",
         [name, description, start_date, end_date, status, isActive, id]

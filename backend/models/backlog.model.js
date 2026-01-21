@@ -13,6 +13,23 @@ exports.findById = (id) => {
     return db.query("SELECT * FROM backlog_items WHERE id = ?", [id]);
 };
 
+const ALLOWED_UPDATE_FIELDS = new Set([
+    "project_id",
+    "sprint_id",
+    "title",
+    "description",
+    "type",
+    "story_points",
+    "priority",
+    "status",
+    "position",
+    "assigned_to_id",
+    "created_by_id",
+    "isActive",
+]);
+
+const ALLOWED_STATUSES = new Set(["BACKLOG", "TODO", "IN_PROGRESS", "DONE", "BLOCKED"]);
+
 exports.findAllBySprint = (sprintId, filters = {}) => {
     let sql = "SELECT * FROM backlog_items WHERE sprint_id = ? AND isActive = 1";
     const params = [sprintId];
@@ -50,12 +67,12 @@ exports.update = (id, data) => {
     const fields = [];
     const values = [];
 
-    for (const key in data) {
-        if (data[key] !== undefined) {
+    Object.entries(data)
+        .filter(([key, value]) => value !== undefined && ALLOWED_UPDATE_FIELDS.has(key))
+        .forEach(([key, value]) => {
             fields.push(`${key} = ?`);
-            values.push(data[key]);
-        }
-    }
+            values.push(value);
+        });
 
     if (!fields.length) return Promise.resolve();
 
@@ -69,6 +86,9 @@ exports.update = (id, data) => {
 
 
 exports.updateStatus = (id, status) => {
+    if (!ALLOWED_STATUSES.has(status)) {
+        return Promise.reject(new Error("Invalid backlog status"));
+    }
     return db.query("UPDATE backlog_items SET status = ? WHERE id = ?", [status, id]);
 };
 

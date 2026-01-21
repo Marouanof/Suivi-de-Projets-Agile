@@ -6,8 +6,12 @@ exports.findByEmail = (email) => {
 
 exports.create = (user) => {
     const { id, email, password, first_name, last_name, role } = user;
+    if (!email || !password) {
+        return Promise.reject(new Error("Email and password are required"));
+    }
+    const normalizedRole = role || "USER";
     return db.query(
         "INSERT INTO users (id, email, password, first_name, last_name, role) VALUES (?, ?, ?, ?, ?, ?)",
-        [id, email, password, first_name, last_name, role]
+        [id, email, password, first_name, last_name, normalizedRole]
     );
 };
