@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">93.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>10/30</span>
+                <span class='fraction'>28/30</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>10/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.11% </span>
+                <span class="strong">88.88% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/9</span>
+                <span class='fraction'>8/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35.71% </span>
+                <span class="strong">92.85% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>10/28</span>
+                <span class='fraction'>26/28</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -168,16 +168,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -185,34 +185,34 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -245,52 +245,52 @@ exports.findById = <span class="fstat-no" title="function not covered" >(i</span
 <span class="cstat-no" title="statement not covered" >    return db.query("SELECT * FROM sprints WHERE id = ?", [id]);</span>
 };
 &nbsp;
-exports.create = <span class="fstat-no" title="function not covered" >(s</span>print) =&gt; {
-    const { id, project_id, name, start_date, end_date, status, planned_velocity, isActive } = <span class="cstat-no" title="statement not covered" >sprint;</span>
-<span class="cstat-no" title="statement not covered" >    return db.query(</span>
+exports.create = (sprint) =&gt; {
+    const { id, project_id, name, start_date, end_date, status, planned_velocity, isActive } = sprint;
+    return db.query(
         "INSERT INTO sprints (id, project_id, name, start_date, end_date, status, planned_velocity, isActive) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        [id, project_id, name, start_date, end_date, status || 'PLANNING', planned_velocity || 0, isActive !== undefined ? isActive : 1]
+        [id, project_id, name, start_date, end_date, status || 'PLANNING', planned_velocity || 0, isActive !== undefined ? <span class="branch-0 cbranch-no" title="branch not covered" >isActive </span>: 1]
     );
 };
 &nbsp;
-exports.update = <span class="fstat-no" title="function not covered" >(i</span>d, sprint) =&gt; {
-    const { name, start_date, end_date, status, planned_velocity, actual_velocity, isActive } = <span class="cstat-no" title="statement not covered" >sprint;</span>
-<span class="cstat-no" title="statement not covered" >    return db.query(</span>
+exports.update = (id, sprint) =&gt; {
+    const { name, start_date, end_date, status, planned_velocity, actual_velocity, isActive } = sprint;
+    return db.query(
         "UPDATE sprints SET name = ?, start_date = ?, end_date = ?, status = ?, planned_velocity = ?, actual_velocity = ?, isActive = ? WHERE id = ?",
         [name, start_date, end_date, status, planned_velocity, actual_velocity, isActive, id]
     );
 };
 &nbsp;
 // Mise à jour partielle (uniquement les champs fournis)
-exports.updatePartial = <span class="fstat-no" title="function not covered" >(i</span>d, data) =&gt; {
-    const fields = <span class="cstat-no" title="statement not covered" >[];</span>
-    const values = <span class="cstat-no" title="statement not covered" >[];</span>
+exports.updatePartial = (id, data) =&gt; {
+    const fields = [];
+    const values = [];
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    Object.entries(data)</span>
-        .filter(<span class="fstat-no" title="function not covered" >([</span>key, value]) =&gt; <span class="cstat-no" title="statement not covered" >value !== undefined &amp;&amp; ALLOWED_UPDATE_FIELDS.has(key))</span>
-        .forEach(<span class="fstat-no" title="function not covered" >([</span>key, value]) =&gt; {
-<span class="cstat-no" title="statement not covered" >            fields.push(`${key} = ?`);</span>
-<span class="cstat-no" title="statement not covered" >            values.push(value);</span>
+    Object.entries(data)
+        .filter(([key, value]) =&gt; value !== undefined &amp;&amp; ALLOWED_UPDATE_FIELDS.has(key))
+        .forEach(([key, value]) =&gt; {
+            fields.push(`${key} = ?`);
+            values.push(value);
         });
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    if (!fields.length) <span class="cstat-no" title="statement not covered" >return Promise.resolve();</span></span>
+    if (!fields.length) return Promise.resolve();
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    values.push(id);</span>
+    values.push(id);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    return db.query(</span>
+    return db.query(
         `UPDATE sprints SET ${fields.join(", ")} WHERE id = ?`,
         values
     );
 };
 &nbsp;
-exports.updateStatus = <span class="fstat-no" title="function not covered" >(i</span>d, status) =&gt; {
-    const allowed = <span class="cstat-no" title="statement not covered" >['PLANNING', 'ACTIVE', 'COMPLETED'];</span>
-<span class="cstat-no" title="statement not covered" >    if (!allowed.includes(status)) <span class="cstat-no" title="statement not covered" >throw new Error(`Invalid status: ${status}`);</span></span>
+exports.updateStatus = (id, status) =&gt; {
+    const allowed = ['PLANNING', 'ACTIVE', 'COMPLETED'];
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (!allowed.includes(status)) throw new Error(`Invalid status: ${status}`);
 <span class="cstat-no" title="statement not covered" >    return db.query("UPDATE sprints SET status = ? WHERE id = ?", [status, id]);</span>
 };
 &nbsp;
-exports.softDelete = <span class="fstat-no" title="function not covered" >(i</span>d) =&gt; {
-<span class="cstat-no" title="statement not covered" >    return db.query(</span>
+exports.softDelete = (id) =&gt; {
+    return db.query(
         "UPDATE sprints SET isActive = 0 WHERE id = ?",
         [id]
     );
@@ -304,7 +304,7 @@ exports.softDelete = <span class="fstat-no" title="function not covered" >(i</sp
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-21T15:33:15.210Z
+                at 2026-01-21T19:23:24.032Z
             </div>
         <script src="../prettify.js"></script>
         <script>

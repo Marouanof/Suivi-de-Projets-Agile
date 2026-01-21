@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.63% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/11</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/5</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.63% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/11</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -145,7 +145,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -160,7 +160,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -171,7 +171,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -182,7 +182,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -210,8 +210,8 @@ exports.getMainMetrics = (projectId) =&gt; {
     );
 };
 &nbsp;
-exports.getMemberWorkload = <span class="fstat-no" title="function not covered" >(p</span>rojectId) =&gt; {
-<span class="cstat-no" title="statement not covered" >    return db.query(</span>
+exports.getMemberWorkload = (projectId) =&gt; {
+    return db.query(
         `SELECT 
             u.first_name, u.last_name,
             COUNT(bi.id) as task_count,
@@ -225,8 +225,8 @@ exports.getMemberWorkload = <span class="fstat-no" title="function not covered" 
     );
 };
 &nbsp;
-exports.getVelocityHistory = <span class="fstat-no" title="function not covered" >(p</span>rojectId) =&gt; {
-<span class="cstat-no" title="statement not covered" >    return db.query(</span>
+exports.getVelocityHistory = (projectId) =&gt; {
+    return db.query(
         `SELECT name, planned_velocity, actual_velocity 
          FROM sprints 
          WHERE project_id = ? AND status = 'COMPLETED' AND isActive = 1
@@ -236,8 +236,8 @@ exports.getVelocityHistory = <span class="fstat-no" title="function not covered"
     );
 };
 &nbsp;
-exports.getAgileMetrics = <span class="fstat-no" title="function not covered" >(p</span>rojectId) =&gt; {
-<span class="cstat-no" title="statement not covered" >    return db.query(</span>
+exports.getAgileMetrics = (projectId) =&gt; {
+    return db.query(
         `SELECT 
             AVG(TIMESTAMPDIFF(HOUR, created_at, completed_at)) as avg_lead_time_hours,
             AVG(TIMESTAMPDIFF(HOUR, started_at, completed_at)) as avg_cycle_time_hours
@@ -247,8 +247,8 @@ exports.getAgileMetrics = <span class="fstat-no" title="function not covered" >(
     );
 };
 &nbsp;
-exports.getSprintOverview = <span class="fstat-no" title="function not covered" >(p</span>rojectId) =&gt; {
-<span class="cstat-no" title="statement not covered" >    return db.query(</span>
+exports.getSprintOverview = (projectId) =&gt; {
+    return db.query(
         `SELECT 
             s.name, s.status,
             COUNT(bi.id) as total_tasks,
@@ -268,7 +268,7 @@ exports.getSprintOverview = <span class="fstat-no" title="function not covered" 
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-21T15:33:15.210Z
+                at 2026-01-21T19:23:24.032Z
             </div>
         <script src="../prettify.js"></script>
         <script>
